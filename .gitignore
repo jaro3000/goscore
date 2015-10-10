@@ -1,3 +1,4 @@
 goscore/efficient.cpp
 goscore/efficient.cpython-34m.so
 build/
+goscore/__pycache__/
