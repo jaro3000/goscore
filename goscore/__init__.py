@@ -1,9 +1,11 @@
-import scipy.ndimage.filters as filters
-from itertools import product
-from PIL import Image, ImageFilter
 import numpy.fft
 import numpy as np
-# posprzatac
+import scipy.ndimage.filters as filters
+
+from itertools import product
+from PIL import Image, ImageFilter
+
+from goscore.efficient import transform
 
 
 def image_to_numpy_contour(im, scale):
@@ -22,7 +24,7 @@ def image_to_numpy_contour(im, scale):
     arr *= 255
     return arr
 
-def transform(inp, oshape):
+def transform_inefficient(inp, oshape):
     max_radius = np.sqrt(inp.shape[0]*inp.shape[0] + inp.shape[1]*inp.shape[1])
     out = np.zeros(oshape)
     sin_a = np.zeros(oshape[0])
@@ -30,7 +32,7 @@ def transform(inp, oshape):
     for angle in range(oshape[0]):
         sin_a[angle] = np.sin(2*np.pi*(angle/oshape[0]))
         cos_a[angle] = np.cos(2*np.pi*(angle/oshape[0]))
-   
+
     for(x,y) in product(range(inp.shape[0]), range(inp.shape[1])):
         if inp[x,y] < 10:
             continue
@@ -41,7 +43,7 @@ def transform(inp, oshape):
             if 0 <= output_r <= oshape[1] - 1:
                 out[angle, output_r] += inp[x, y]
     return out
-                
+
 
 def draw_line(image, oshape, angle, radius):
     max_radius = np.sqrt(image.shape[0]*image.shape[0] + image.shape[1]*image.shape[1])
